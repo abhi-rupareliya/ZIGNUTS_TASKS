@@ -1,0 +1,47 @@
+<!-- Task5: Write a program to print fibonacci series. Take the number of steps from input using HTML Input
+and whenclick on Print button, using JS print the entered number of steps in the fibonacci series on HTML
+page. -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Task5</title>
+    <script>
+        function fibonacci() {
+            // Get the number of steps from the input
+            let steps = document.getElementById("steps").value;
+
+            // check if the input is positive int only
+            if (!Number.isInteger(Number(steps)) || steps < 0) {
+                alert("Please enter a positive integer only");
+                return;
+            }
+
+            // calculate the fibonacci series
+            let a = 0, b = 1, c;
+            let result = a + " " + b;
+            for (let i = 2; i < steps; i++) {
+                c = a + b;
+                result += " " + c;
+                a = b;
+                b = c;
+            }
+
+            // Display the result
+            document.getElementById("result").innerHTML = result;
+        }
+    </script>
+</head>
+
+<!-- HTML layout -->
+
+<body>
+    <h1>Fibonacci Series</h1>
+    <label>Enter the number of steps:</label>
+    <input type="text" id="steps">
+    <button onclick="fibonacci()">Print</button>
+    <p id="result"></p>
+</body>
+
+</html>
