@@ -101,7 +101,7 @@ export default function ProfileCard({ profileData, deleteUser }) {
                         <input
                             type="text"
                             id="name"
-                            value={user.name}
+                            value={formData.name}
                             onChange={handleFormChange}
                             placeholder="Enter your name"
                             className="w-full border border-gray-300 p-2 rounded focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
