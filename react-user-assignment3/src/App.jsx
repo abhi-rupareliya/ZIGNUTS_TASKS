@@ -1,21 +1,34 @@
-import { useState, useEffect } from 'react'
-import ProfileCard from './components/ProfileCard'
+import { useState, useEffect } from "react";
+import ProfileCard from "./components/ProfileCard";
 
 function App() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users')
-      const data = await response.json()
-      setUsers(data)
+      const response = await fetch("https://jsonplaceholder.typicode.com/users");
+      let data = await response.json();
+      data = data.map((user) => {
+        return { ...user, isLiked: false };
+      });
+      setUsers(data);
     }
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const deleteUser = (id) => {
     setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+  };
+
+  const updateUser = (id) => {
+    return (updatedData) => {
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === id ? { ...user, ...updatedData } : user
+        )
+      );
+    };
   };
 
   return (
@@ -24,13 +37,14 @@ function App() {
         {users.map((user) => (
           <ProfileCard
             key={user.id}
-            profileData={user}
+            user={user}
             deleteUser={deleteUser}
+            updateUser={updateUser(user.id)}
           />
         ))}
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
