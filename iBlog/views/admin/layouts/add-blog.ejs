@@ -1,0 +1,168 @@
+<main id="main" class="main" style="min-height: 73vh;">
+    <div class="pagetitle">
+        <h1>Create Blog</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">home</a></li>
+                <li class="breadcrumb-item active">add-blog</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Create Blog</h5>
+
+                        <!-- Post Form -->
+                        <form class="row g-3" action="/blog" method="POST" enctype="multipart/form-data">
+                            <!-- Title Field -->
+                            <div class="col-12">
+                                <label for="inputTitle" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="inputTitle" name="title"
+                                    placeholder="Enter post title" required>
+                            </div>
+
+                            <!-- Category Dropdown -->
+                            <div class="col-12">
+                                <label for="inputCategory" class="form-label">Category</label>
+                                <select class="form-select" id="inputCategory" name="category" required>
+                                    <option value="" disabled selected>Select category</option>
+                                    <% categories.forEach(category=> { %>
+                                        <option value="<%= category._id %>">
+                                            <%= category.name %>
+                                        </option>
+                                    <% }) %>
+                                </select>
+                            </div>
+
+                            <!-- Thumbnail Image Field -->
+                            <div class="col-12">
+                                <label for="inputThumbnail" class="form-label">Thumbnail Image</label>
+                                <input type="file" class="form-control" id="inputThumbnail" name="thumbnail" 
+                                    accept="image/*" required>
+                                <small class="text-muted">Upload a thumbnail image (JPEG, PNG, or GIF, max 2MB).</small>
+                                <div id="thumbnailPreview" style="margin-top: 10px; display: none;">
+                                    <img id="previewImage" src="" alt="Thumbnail Preview" style="max-width: 200px; max-height: 200px; border: 1px solid #ced4da;">
+                                </div>
+                            </div>
+
+                            <!-- Feature Image Field -->
+                            <div class="col-12">
+                                <label for="inputFeatureImage" class="form-label">Feature Image</label>
+                                <input type="file" class="form-control" id="inputFeatureImage" name="featureImage" 
+                                    accept="image/*" required>
+                                <small class="text-muted">Upload a feature image (JPEG, PNG, or GIF, max 2MB).</small>
+                                <div id="featureImagePreview" style="margin-top: 10px; display: none;">
+                                    <img id="previewFeatureImage" src="" alt="Feature Image Preview" 
+                                        style="max-width: 200px; max-height: 200px; border: 1px solid #ced4da;">
+                                </div>
+                            </div>
+
+                            <!-- Content Field -->
+                            <div class="col-12">
+                                <label for="quill-editor" class="form-label">Content</label>
+                                <div id="quill-editor" class="form-control"
+                                    style="height: 500px; border: 1px solid #ced4da;"></div>
+                                <input type="hidden" id="quillContent" name="content">
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a href="/admin/blogs" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form><!-- End Post Form -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Quill Editor
+        var quill = new Quill('#quill-editor', {
+            theme: 'snow',
+            modules: {
+                syntax: true,
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{'align' : ''},{ 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }],
+                    ['link', 'image', 'code-block'],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Update hidden input for Quill content
+        function updateQuillContent() {
+            var quillContent = quill.root.innerHTML;
+            document.getElementById('quillContent').value = quillContent;
+        }
+        document.querySelector('form').addEventListener('submit', updateQuillContent);
+
+        // Load syntax highlighter dynamically
+        var script = document.createElement('script');
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js";
+        script.onload = function () {
+            hljs.highlightAll();
+        };
+        document.head.appendChild(script);
+
+        var style = document.createElement('link');
+        style.rel = "stylesheet";
+        style.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css";
+        document.head.appendChild(style);
+
+
+        // Existing Thumbnail Preview Logic
+        const inputThumbnail = document.getElementById('inputThumbnail');
+        const thumbnailPreview = document.getElementById('thumbnailPreview');
+        const previewImage = document.getElementById('previewImage');
+
+        inputThumbnail.addEventListener('change', function () {
+            const file = inputThumbnail.files[0];
+            handleFileValidationAndPreview(file, previewImage, thumbnailPreview, inputThumbnail);
+        });
+
+        // Feature Image Preview Logic
+        const inputFeatureImage = document.getElementById('inputFeatureImage');
+        const featureImagePreview = document.getElementById('featureImagePreview');
+        const previewFeatureImage = document.getElementById('previewFeatureImage');
+
+        inputFeatureImage.addEventListener('change', function () {
+            const file = inputFeatureImage.files[0];
+            handleFileValidationAndPreview(file, previewFeatureImage, featureImagePreview, inputFeatureImage);
+        });
+
+        // Common Function for File Validation and Preview
+        function handleFileValidationAndPreview(file, previewElement, previewContainer, inputElement) {
+            if (file) {
+                // Validate file size (2MB max)
+                const maxSize = 2 * 1024 * 1024; // 2MB
+                if (file.size > maxSize) {
+                    alert('File size must be 2MB or less.');
+                    inputElement.value = '';
+                    previewContainer.style.display = 'none';
+                    return;
+                }
+
+                // Preview the image
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewElement.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+    });
+</script>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="<%= blog?.description || '' %>" />
+        <meta name="author" content="<%= blog?.author || 'Unknown Author' %>" />
+        <title><%= blog?.title || 'Blog Post' %> - Start Bootstrap Template</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="/css/styles.css" rel="stylesheet" />
+        <link href="/css/user-blog.css" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Page content-->
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col mx-auto blog-content" >
+                    <!-- Post content-->
+                    <article >
+                        <!-- Post header-->
+                        <header class="mb-4">
+                            <!-- Post title-->
+                            <h1 class="fw-bolder mb-1"><%= blog?.title || 'Welcome to Blog Post!' %></h1>
+                            <!-- Post meta content-->
+                            <div class="text-muted fst-italic mb-2">
+                                Posted on <%= blog?.publishDate ? blog.publishDate.toDateString() : 'Unknown Date' %> %>
+                            </div>
+                            <!-- Post categories-->
+                            <% if (blog?.category?.name) { %>
+                                <a class="badge bg-secondary text-decoration-none link-light" href="#!"><%= blog.category.name %></a>
+                            <% } else { %>
+                                <span class="badge bg-secondary text-decoration-none link-light">Uncategorized</span>
+                            <% } %>
+                        </header>
+                        <!-- Preview image figure-->
+                        <% if (blog?.featureImage) { %>
+                            <figure class="mb-4" style="background-color: rgb(233, 233, 233); border: 1px solid rgb(233, 233, 233);">
+                                <img class="img-fluid rounded blog-fe-image" src="<%= blog.featureImage %>" alt="<%= blog?.title || 'Blog Image' %>" />
+                            </figure>
+                        <% } else { %>
+                            <figure class="mb-4">
+                                <img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="Default Image" />
+                            </figure>
+                        <% } %>
+                        <!-- Post content-->
+                        <section class="mb-5">
+                            <% if (blog?.description) { %>
+                                <p class="fs-5 mb-4"><%- blog.description %></p>
+                            <% } else { %>
+                                <p class="fs-5 mb-4">Content is not available for this blog post.</p>
+                            <% } %>
+                        </section>
+                    </article>
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="/js/scripts.js"></script>
+    </body>
+</html>

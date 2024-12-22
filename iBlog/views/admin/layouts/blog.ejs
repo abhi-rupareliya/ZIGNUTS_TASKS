@@ -1,0 +1,27 @@
+<main id="main" class="main">
+    <div class="pagetitle px-3">
+        <h1>
+            <%= blog?.title %>
+        </h1>
+        <p class="mt-2">
+            <%= blog?.category.name %>
+        </p>
+        <p>Date: <%= blog?.publishDate.toDateString() %>
+        </p>
+        <p>Time: <%= blog?.publishDate.toTimeString().split(' ')[0] %></p>
+        
+        <a href="/admin/edit-blog/<%= blog._id %>">Edit Blog</a>
+    </div><!-- End Page Title -->
+
+    <section class="section blog">
+        <div class="card">
+            <div class="blog-content p-3">
+                <!-- Using the `raw` function to render HTML content safely -->
+                <%- blog?.description %>
+                    <div class="text-end">
+                        <a href="/admin/blogs" class="btn btn-link">Back to Dashboard</a>
+                    </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->

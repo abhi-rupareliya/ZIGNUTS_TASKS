@@ -1,0 +1,76 @@
+<main id="main" class="main"  style="min-height: 78vh;">
+
+    <div class="pagetitle">
+        <h1>Dashboard</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">home</a></li>
+                <li class="breadcrumb-item active">blogs</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">List of Blogs</h5>
+
+                    <!-- Table with stripped rows -->
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% blogs.forEach((blog, index) => { %>
+                                <tr>
+                                    <th scope="row"><%= index + 1 %></th>
+                                    <td><%= blog.title %></td>
+                                    <td><%= blog.category.name %></td>
+                                    <td><a href="/admin/<%= blog.slug %>" class="btn btn-link btn-sm">View</a></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="window.location.href='/admin/edit-blog/<%= blog._id %>'">Edit</button>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal<%= blog._id %>">Delete</button>
+                                    </td>
+                                </tr>
+
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal<%= blog._id %>" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel">Delete Blog</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete the blog "<%= blog.title %>"?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form action="/blog/<%= blog._id %>?_method=DELETE"
+                                                    method="POST" class="d-inline">
+                                                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+
+                            
+                        </tbody>
+                    </table>
+                    <!-- End Table with stripped rows -->
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
